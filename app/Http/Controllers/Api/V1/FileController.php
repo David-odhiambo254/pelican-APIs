@@ -6,6 +6,8 @@ use App\Models\File;
 use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\UpdateFileRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\FileCollection;
+use App\Http\Resources\V1\FileResource;
 
 class FileController extends Controller
 {
@@ -14,7 +16,7 @@ class FileController extends Controller
      */
     public function index()
     {
-        //
+        return new FileCollection(File::paginate());
     }
 
     /**
@@ -38,7 +40,7 @@ class FileController extends Controller
      */
     public function show(File $file)
     {
-        //
+        return new FileResource($file);
     }
 
     /**
