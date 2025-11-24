@@ -8,15 +8,25 @@ use App\Http\Requests\UpdateFileRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\FileCollection;
 use App\Http\Resources\V1\FileResource;
+use App\Services\V1\OrdersFilter;
+use Illuminate\Http\Request;
 
 class FileController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return new FileCollection(File::paginate());
+        $filter = new OrdersFilter();
+        $queryItems = $filter->transform($request);
+        
+        if (count($queryItems) == 0) {
+            return new FileCollection(File::paginate());
+        } else {
+            return new FileCollection(File::where($queryItems)->paginate());
+        }
+        
     }
 
     /**
