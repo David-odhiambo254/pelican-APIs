@@ -22,7 +22,8 @@ class CustomerResource extends JsonResource
             'phone' => $this->phone,
             'address' => $this->address,
             'status' => $this->status,
-            'isGuest' => $this->is_guest
+            'isGuest' => $this->is_guest,
+            'orders' => OrderResource::collection($this->whenLoaded('orders'))
         ];
     }
 }

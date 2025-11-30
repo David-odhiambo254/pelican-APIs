@@ -19,12 +19,12 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $filter = new OrdersFilter();
-        $queryItems = $filter->transform($request);
+        $filterItems = $filter->transform($request);
         
-        if (count($queryItems) == 0) {
+        if (count($filterItems) == 0) {
             return new OrderCollection(Order::paginate());
         } else {
-            return new OrderCollection(Order::where($queryItems)->paginate());
+            return new OrderCollection(Order::where($filterItems)->paginate());
         }
         
     }

@@ -19,12 +19,13 @@ class FileController extends Controller
     public function index(Request $request)
     {
         $filter = new OrdersFilter();
-        $queryItems = $filter->transform($request);
+        $filterItems = $filter->transform($request);
         
-        if (count($queryItems) == 0) {
+        if (count($filterItems) == 0) {
             return new FileCollection(File::paginate());
         } else {
-            return new FileCollection(File::where($queryItems)->paginate());
+            $files = File::where($filterItems)->paginate();
+            return new FileCollection($files->appends($request->query()));
         }
         
     }
