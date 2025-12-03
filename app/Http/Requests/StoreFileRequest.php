@@ -11,7 +11,7 @@ class StoreFileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,6 +23,23 @@ class StoreFileRequest extends FormRequest
     {
         return [
             //
+            'orderId' => ['required'],
+            'url' => ['required'],
+            'name' => ['required'],
+            'printSize' => ['required'],
+            'colorMode' => ['required'],
+            'copies' => ['required'],
+            'status' => []
         ];
+    }
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'order_id' => $this->orderId,
+            'file_path' => $this->url,
+            'file_name' => $this->name,
+            'print_size' => $this->printSize,
+            'color_mode' => $this->colorMode,
+        ]);
     }
 }

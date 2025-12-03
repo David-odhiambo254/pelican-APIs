@@ -44,6 +44,7 @@ class FileController extends Controller
     public function store(StoreFileRequest $request)
     {
         //
+        return new FileResource(File::create($request->all()));
     }
 
     /**

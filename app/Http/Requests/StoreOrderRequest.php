@@ -11,7 +11,7 @@ class StoreOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,6 +23,26 @@ class StoreOrderRequest extends FormRequest
     {
         return [
             //
+            'customerId' => ['required'],
+            'priority' => ['required'],
+            'deliveryAddress' => [],
+            'status' => [],
+            'paymentMethod' => [],
+            'deliveryDate' => ['required'],
+            'total' => ['required'],
+            'note' => []
         ];
+       
+    }
+    protected function prepareForValidation()
+    {
+        // return parent::prepareForValidation();
+        $this->merge([
+            'customer_id' => $this-> customerId,
+            'delivery_address' => $this-> deliveryAddress,
+            'payment_method' => $this-> paymentMethod,
+            'delivery_date' => $this-> deliveryDate,
+            'total_price' => $this-> total
+        ]);
     }
 }
