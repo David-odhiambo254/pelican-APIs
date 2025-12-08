@@ -69,6 +69,7 @@ class FileController extends Controller
     public function update(UpdateFileRequest $request, File $file)
     {
         //
+        $file->update($request->all());
     }
 
     /**

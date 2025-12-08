@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCustomerRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateCustomerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,37 @@ class UpdateCustomerRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        $method = $this->method();
+        if($method == 'PUT'){
+            return [
+                'name' => ['required'],
+                'email' => ['required','email'],
+                'phone' => ['required'],
+                'address' => ['required'],
+                'status' => ['required',Rule::in(['active', 'inactive', 'suspended'])],
+                'isGuest' => ['required'],
+                'password' => []
+            ];
+        } else {
+            return [
+                'name' => ['sometimes','required'],
+                'email' => ['sometimes','required','email'],
+                'phone' => ['sometimes','required'],
+                'address' => ['sometimes','required'],
+                'status' => ['sometimes','required',Rule::in(['active', 'inactive', 'suspended'])],
+                'isGuest' => ['sometimes','required'],
+                'password' => []
+            ];
+        }
+        
+    }
+    protected function prepareForValidation()
+    {
+        if($this->isGuest){
+            $this->merge([
+                'is_guest' => $this->isGuest
+            ]);
+        }
+        
     }
 }
