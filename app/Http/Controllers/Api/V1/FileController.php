@@ -10,6 +10,8 @@ use App\Http\Resources\V1\FileCollection;
 use App\Http\Resources\V1\FileResource;
 use App\Services\V1\OrdersFilter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use App\Http\Requests\BulkStoreFileRequest;
 
 class FileController extends Controller
 {
@@ -45,6 +47,14 @@ class FileController extends Controller
     {
         //
         return new FileResource(File::create($request->all()));
+    }
+
+    public function bulkStore(BulkStoreFileRequest $request){
+        $bulk = collect($request->all())->map(function ($arr, $key) {
+            return Arr:: except($arr,['orderId','url','name','printSize','colorMode']);
+        });
+
+        File::insert($bulk->toArray());
     }
 
     /**
