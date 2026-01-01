@@ -17,7 +17,7 @@ class FileResource extends JsonResource
         // return parent::toArray($request);
         return [
             'orderId' => $this->order_id,
-            'url' => $this->file_path,
+            'file' => $this->file_path,
             'name' => $this->file_name,
             'printSize' => $this->print_size,
             'colorMode' => $this->color_mode,

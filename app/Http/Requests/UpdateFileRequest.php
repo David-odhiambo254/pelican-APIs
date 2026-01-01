@@ -22,28 +22,27 @@ class UpdateFileRequest extends FormRequest
     public function rules(): array
     {
         $method = $this->method();
-        if($method == 'PUT'){
-           return [
-            'orderId' => ['required'],
-            'url' => ['required'],
-            'name' => ['required'],
-            'printSize' => ['required'],
-            'colorMode' => ['required'],
-            'copies' => ['required'],
-            'status' => []
-           ];
-        }else{
-            return[
-                'orderId' => ['sometimes','required'],
-                'url' => ['sometimes','required'],
-                'name' => ['sometimes','required'],
-                'printSize' => ['sometimes','required'],
-                'colorMode' => ['sometimes','required'],
-                'copies' => ['sometimes','required'],
+        if ($method == 'PUT') {
+            return [
+                'orderId' => ['required'],
+                'file' => ['required'],
+                'name' => ['required'],
+                'printSize' => ['required'],
+                'colorMode' => ['required'],
+                'copies' => ['required'],
+                'status' => []
+            ];
+        } else {
+            return [
+                'orderId' => ['sometimes', 'required'],
+                'file' => ['sometimes', 'required'],
+                'name' => ['sometimes', 'required'],
+                'printSize' => ['sometimes', 'required'],
+                'colorMode' => ['sometimes', 'required'],
+                'copies' => ['sometimes', 'required'],
                 'status' => []
             ];
         }
-        
     }
     protected function prepareForValidation()
     {
@@ -52,7 +51,7 @@ class UpdateFileRequest extends FormRequest
         $this->name ? $this->merge(['file_name' => $this->name]) : '';
         $this->printSize ? $this->merge(['print_size' => $this->printSize]) : '';
         $this->colorMode ? $this->merge(['color_mode' => $this->colorMode]) : '';
-        
+
         // $this->merge([
         //     'order_id' => $this->orderId,
         //     'file_path' => $this->url,

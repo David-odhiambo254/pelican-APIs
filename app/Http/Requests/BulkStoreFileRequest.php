@@ -34,11 +34,11 @@ class BulkStoreFileRequest extends FormRequest
     }
     protected function prepareForValidation()
     {
-        $data =[];
+        $data = [];
 
-        foreach ($this->toArray() as $obj){
+        foreach ($this->toArray() as $obj) {
             $obj['order_id'] = $obj['orderId'] ?? null;
-            $obj['file_path'] = $obj['url'] ?? null;
+            $obj['file_path'] = $obj['file'] ?? null;
             $obj['file_name'] = $obj['name'] ?? null;
             $obj['print_size'] = $obj['printSize'] ?? null;
             $obj['color_mode'] = $obj['colorMode'] ?? null;
@@ -46,8 +46,8 @@ class BulkStoreFileRequest extends FormRequest
             $data[] = $obj;
         }
         $this->merge($data);
-        
-        
+
+
         // $this->merge([
         //     'order_id' => $this->orderId,
         //     'file_path' => $this->url,

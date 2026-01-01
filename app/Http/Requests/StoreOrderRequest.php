@@ -25,10 +25,10 @@ class StoreOrderRequest extends FormRequest
             //
             'customerId' => ['required'],
             'priority' => ['required'],
-            'deliveryAddress' => [],
+            'deliveryAddress' => ['required'],
             'status' => [],
             'paymentMethod' => [],
-            'deliveryDate' => ['required'],
+            'deliveryDate' => [],
             'total' => ['required'],
             'note' => []
         ];

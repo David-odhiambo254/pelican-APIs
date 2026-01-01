@@ -24,8 +24,8 @@ class StoreFileRequest extends FormRequest
         return [
             //
             'orderId' => ['required'],
-            'url' => ['required'],
-            'name' => ['required'],
+            'file' => ['required','file','max:2048'],
+            'name' => [],
             'printSize' => ['required'],
             'colorMode' => ['required'],
             'copies' => ['required'],

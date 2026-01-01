@@ -22,14 +22,13 @@ class FileController extends Controller
     {
         $filter = new OrdersFilter();
         $filterItems = $filter->transform($request);
-        
+
         if (count($filterItems) == 0) {
             return new FileCollection(File::paginate());
         } else {
             $files = File::where($filterItems)->paginate();
             return new FileCollection($files->appends($request->query()));
         }
-        
     }
 
     /**
@@ -45,13 +44,29 @@ class FileController extends Controller
      */
     public function store(StoreFileRequest $request)
     {
-        //
-        return new FileResource(File::create($request->all()));
+        //return new FileResource(File::create($request->all()));
+        $file = null;
+        $fileName = null;
+        if ($request->hasFile('file')) {
+            $fileName = $request->file('file')->getClientOriginalName();
+            $file = $request->file('file')->move(public_path('printFiles'), $fileName);
+            $filePath = public_path('printFiles') . '/' . $fileName;
+        }
+        return new FileResource(File::create([
+            'order_id'=> $request->orderId,
+            'file_path' => $file,
+            'file_name' => $fileName,
+            'print_size' => $request->printSize,
+            'color_mode' => $request->colorMode,
+            'copies' => $request->copies,
+            'status' => $request->status
+        ]));
     }
 
-    public function bulkStore(BulkStoreFileRequest $request){
+    public function bulkStore(BulkStoreFileRequest $request)
+    {
         $bulk = collect($request->all())->map(function ($arr, $key) {
-            return Arr:: except($arr,['orderId','url','name','printSize','colorMode']);
+            return Arr::except($arr, ['orderId', 'file', 'name', 'printSize', 'colorMode']);
         });
 
         File::insert($bulk->toArray());
