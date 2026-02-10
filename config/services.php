@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'open_router' => [
+        'api_key' => env('OPEN_ROUTER_API_KEY'),
+        'model' => env('OPEN_ROUTER_MODEL'),
+    ],
+
 ];
