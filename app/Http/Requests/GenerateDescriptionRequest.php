@@ -22,7 +22,16 @@ class GenerateDescriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048', // Validate the uploaded image
+            'image' => 'required|file|mimes:jpeg,png,jpg,gif|max:4048', // Validate the uploaded image
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'image.required' => 'An image file is required.',
+            'image.file' => 'The uploaded file must be a valid file.',
+            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif.',
+            'image.max' => 'The image may not be greater than 4MB.',
         ];
     }
 }

@@ -8,7 +8,7 @@ class imageDescription extends Model
 {
     protected $fillable = [
         'user_id',
-        'description',
+        'generated_description',
         'image_path',
         'original_filename',
         'file_size',

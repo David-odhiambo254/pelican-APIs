@@ -2,66 +2,48 @@
 
 namespace App\Services;
 
+use Illuminate\Http\UploadedFile;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use OpenAI\Factory;
 
 class OpenRouterService
 {
-    public function generateDescriptionFromImage($imagePath)
+    public function generateDescriptionFromImage(UploadedFile $image) : string
     {
-        $logger = new Logger('api_logger');
-        $logger->pushHandler(new StreamHandler(storage_path('logs/api.log'), Logger::INFO));
-        $apiKey = config('services.open_router.api_key');
-        $model = config('services.open_router.model');
+        $imageData = base64_encode(file_get_contents($image->getPathname()));
+        $mimeType = $image->getMimeType();
 
-        // Logic to call Open Router API with the image and get the description
-        $logger->info('Sending request to Open Router API');
-        $response = request()->post('https://api.openrouter.ai/v1/chat/completions', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $apiKey,
-                'Content-Type' => 'application/json',
-            ],
-            'json' => [
-                'model' => $model,
-                
-                'messages' => [
-                    [
-                        'role' => 'user',
-                        'content' => [
+         $client = (new Factory())->withApiKey(config('services.open_router.api_key'))->withBaseUri(config('services.open_router.base_url'))->withHttpHeader('HTTP-Referer', 'http://localhost:8000')->withHttpHeader('X-Title', 'My Laravel App (Local)')->make();
+        // $client = (new Factory())->withApiKey(config('services.open_router.api_key'))->withBaseUri(config('services.open_router.base_url'))->make();
+        $response = $client->chat()->create([
+            'model' => config('services.open_router.model'),
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => [
+                        [
                             'type' => 'text',
-                            'text' => "What is in this image?",
-                        ]
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => [
-                            'type' => 'image',
-                            'image_url' => $imagePath,
+                            'text' => "You are a helpful assistant at an autopart store. Analyze the image and identify the vehicle part shown in the image. Where possible, provide the make, model, and year of the vehicle that uses thet part, part number, and estimated price of the part. Be concise and informative but brief in your description (5 sentences or less). If the image is not a vehicle part, please state that the image does not contain a recognizable vehicle part.",
+                        ],
+                        [
+                            'type' => 'image_url',
+                            'image_url' => [
+                                'url' => 'data:' . $mimeType . ';base64,' . $imageData,
+                            ]
                         ]
                     ]
-                ]
-            ],
+                ],
+            ]
         ]);
 
-        // Log the response
-        $logger->info('API Response: ' . json_encode($response));
+         // Log the response structure
+        //  dd($response->choices[0]->message->content);
+            $log = new Logger('open_router');
+            $log->pushHandler(new StreamHandler(storage_path('logs/open_router.log')), Logger::INFO);
+            $log->info('Open Router Response', ['response' => $response->choices[0]->message->content]);
+        
+        return $response->choices[0]->message->content ?? 'No description generated.';
 
-        if (is_string($response)) {
-            $decoded = json_decode($response);
-            $response = json_last_error() === JSON_ERROR_NONE ? $decoded : (object)['raw' => $response];
-        } elseif (is_array($response)) {
-            $response = (object) $response;
-        } elseif ($response === null) {
-            $response = (object) [];
-        }
-
-        // if ($response->failed()) {
-        //     return 'Failed to generate description. Please try again later.';
-        // }
-
-        $data = $response ?? (object) [];
-        // return $data->choices[0]->message->content ?? 'No description generated.';
-        logger()->info('Extracted Data: ' . json_encode($data));
-        return $response ?? 'No description generated.';
     }
 }
