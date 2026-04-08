@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\OrderCollection;
 use App\Http\Resources\V1\OrderResource;
+use App\Http\Resources\V1\TrackOrderResource;
 use App\Services\V1\OrdersFilter;
 use Illuminate\Http\Request;
 
@@ -76,5 +77,9 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+    public function track(Order $order)
+    {
+        return new TrackOrderResource($order);
     }
 }
