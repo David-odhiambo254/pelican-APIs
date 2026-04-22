@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\Payment;
+// use App\Models\Payment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Resources\V1\PaymentResource;
 use App\Models\Order;
-use Illuminate\Http\Request;
+// use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
@@ -37,9 +37,14 @@ class PaymentController extends Controller
 
     public function store(StorePaymentRequest $request)
     {
+        //return new StorePaymentRequest(Payment::create($request->all()));
+        // return new PaymentResource(Payment::create($request->all()));
+
         // This is where you would integrate with a payment gateway to process the payment, get the transaction code, and update the payment status accordingly. For now, we'll just create a payment record with a pending status.
         $Order = Order::find($request->order_id);
         if ($Order) {
+            $Order->update(['payment_method' => $request->payment_method,'status' => 'paid']);
+
             $Order->payment()->create($request->all());
             return new PaymentResource($Order->payment);
         } else {
