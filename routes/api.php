@@ -11,6 +11,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\Api\V1'], f
     Route::resource('customers', 'CustomerController'); //CustomerController::class
     Route::resource('files', 'FileController'); //FileController::class
     Route::resource('orders', 'OrderController'); //OrderController::class
+    Route::resource('payments', 'PaymentController');
 
     Route::post('files/bulk',['uses'=>'FileController@bulkStore']);
     Route::get('/orders/{order}/track', 'OrderController@track')->name('order.track');
