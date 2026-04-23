@@ -11,7 +11,12 @@ class Payment extends Model
         'payment_method',
         'amount',
         'status',
-        'transaction_code'
+        'transaction_code',
+        'phone_number',
+        'card_number',
+        'name_on_card',
+        'expiry_date',
+        'cvv'
     ];
 
     public function order()

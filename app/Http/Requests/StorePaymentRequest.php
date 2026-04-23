@@ -32,6 +32,12 @@ class StorePaymentRequest extends FormRequest
         $this->merge([
             'order_id' => $this->orderId,
             'payment_method' => $this->paymentMethod,
+            'transaction_code' => $this->transactionCode, // 'transaction_code' => 'TXN' . strtoupper(uniqid()),
+            'phone_number' => $this->phoneNumber,
+            'card_number' => $this->cardNumber,
+            'name_on_card' => $this->nameOnCard,
+            'expiry_date' => $this->expiryDate,
+            'cvv' => $this->cvv,
         ]);
     }
 }

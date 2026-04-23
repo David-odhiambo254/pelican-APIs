@@ -41,11 +41,32 @@ class PaymentController extends Controller
         // return new PaymentResource(Payment::create($request->all()));
 
         // This is where you would integrate with a payment gateway to process the payment, get the transaction code, and update the payment status accordingly. For now, we'll just create a payment record with a pending status.
+        if ($request->payment_method === 'mpesa_paybill' || $request->payment_method === 'bank') {
+            // Validate transaction code for M-Pesa Paybill
+            $request->validate([
+                'transaction_code' => 'required|string|unique:payments,transaction_code',
+            ]);
+        }
+        if ($request->payment_method === 'mpesa_stk' || $request->payment_method === 'airtel') {
+            // Validate phone number for M-Pesa STK Push
+            $request->validate([
+                'phone_number' => 'required|digits:10',
+            ]);
+        }
+        if ($request->payment_method === 'card') {
+            // Validate card details
+            $request->validate([
+                'card_number' => 'required|digits:16',
+                'name_on_card' => 'required|string',
+                'expiry_date' => 'required|date_format:m/y|after:today',
+                'cvv' => 'required|digits:3',
+            ]);
+        }
         $Order = Order::find($request->order_id);
         if ($Order) {
             $Order->update(['payment_method' => $request->payment_method,'status' => 'paid']);
 
-            $Order->payment()->create($request->all());
+            $Order->payment()->create($request->all()); //$Order->payment()->updateOrCreate($request->all());
             return new PaymentResource($Order->payment);
         } else {
             return response()->json([

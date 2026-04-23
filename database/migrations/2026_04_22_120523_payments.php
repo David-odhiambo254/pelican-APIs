@@ -17,7 +17,12 @@ return new class extends Migration
             $table->string('payment_method');
             $table->integer('amount');
             $table->string('status')->default('pending');
-            $table->string('transaction_code')->nullable();
+            $table->string('transaction_code')->nullable()->unique();
+            $table->string('phone_number')->nullable();
+            $table->string('card_number')->nullable();
+            $table->string('name_on_card')->nullable();
+            $table->string('expiry_date')->nullable();
+            $table->string('cvv')->nullable();
             $table->timestamps();
         });
     }
